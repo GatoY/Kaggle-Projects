@@ -6,15 +6,13 @@ from sklearn import cross_validation
 from sklearn.ensemble import RandomForestClassifier
 def load_data(file_name):
     data = pd.read_csv(file_name)
-    print '```````````````'
-    #print data.columns
-    print '````````````````'
     fix_miss_value(data)
     convert_data(data)
     return data
 
 def fix_miss_value(df):
     df.Embarked[df.Embarked.isnull()] = df.Embarked.dropna().mode().values
+    # use title to predict na.
     df.Age[df.Age.isnull()]=df.Age.dropna().mean()
     del df['Cabin']
 
@@ -36,7 +34,6 @@ def test_feature_extraction(df):
     new_df = df.drop(['fare_bin', 'Fare', 'PassengerId', 'Name', 'Ticket', 'Fare', 'Embarked', 'fare_bin'], axis=1)
     new_df.columns = [0,1,2,3,4,5,6]
     label_data = pd.read_csv('gender_submission.csv')
-    #print label_data.values
     label = label_data['Survived'].values
     feature = new_df.ix[:].values
     return label, feature
@@ -47,16 +44,13 @@ def off_model_building(feature,label):
     clf=clf.fit(train_feature,train_label)
     return clf, test_label,test_feature
 
-train_data = load_data('train.csv')
-test_data = load_data('test.csv')
-#print '````````````````````````````````'
-#print train_data.columns
-#print '``````````````````````````````````'
-Tlabel, Tfeature = off_feature_extraction(train_data)
-Telabel, Tefeature = test_feature_extraction(test_data)
-clf, test_label, test_feature = off_model_building(Tfeature,Tlabel)
-print clf.score(Tefeature,Telabel)
-print '2'
-print clf.score(test_feature,test_label)
-
-
+if __name__ == "__main__":
+    #load data
+    train_data = load_data('train.csv')
+    test_data = load_data('test.csv')
+    #extract feature and label
+    Tlabel, Tfeature = off_feature_extraction(train_data)
+    Telabel, Tefeature = test_feature_extraction(test_data)
+    clf, test_label, test_feature = off_model_building(Tfeature,Tlabel)
+    print clf.score(Tefeature,Telabel)
+    print clf.score(test_feature,test_label)

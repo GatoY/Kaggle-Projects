@@ -1,17 +1,15 @@
 import numpy as np
-import seaborn as sns
 import matplotlib as plt
 import pandas as pd
 import re
 from sklearn import preprocessing
-sns.set()
+
 data = pd.read_csv('train.csv')
 data = data.drop(['PassengerId'],axis=1)
 min_max_scaler = preprocessing.MinMaxScaler()
 data['Pclass'] = pd.DataFrame(min_max_scaler.fit_transform(pd.DataFrame(data['Pclass'])))
 
 data.drop(['Ticket',axis=1])
-
 
 data['FamilyMembers'] = data['Parch']+data['SibSp']
 data['FamilyMembers'] = pd.DataFrame(min_max_scaler.fit_transform(pd.DataFrame(data['FamilyMembers'])))
@@ -20,7 +18,7 @@ def get_title(name):
     pattern = r' (\w+)\.'
     result_search = re.search(pattern,name)
     if result_search:
-	return result_search.group(1)
+        return result_search.group(1)
     return ''
 
 for dataset in data:
